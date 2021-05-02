@@ -28,7 +28,7 @@ class ArtistList(APIView):
             serializer = ArtistSerializer(nuevo_artista)
             return Response(serializer.data)
         else:
-            return(status= status.HTTP_400_BAD_REQUEST)
+            return Response(status= status.HTTP_400_BAD_REQUEST)
 
 class AlbumList(APIView):
 
@@ -107,7 +107,7 @@ class AlbumByArtist(APIView):
             serializer = AlbumSerializer(nuevo_album)
             return Response(serializer.data)
         else:
-            return(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
+            return Response(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 class CancionByArtist(APIView):
 
@@ -140,7 +140,7 @@ class CancionByAlbum(APIView):
             serializer = CancionSerializer(nueva_cancion)
             return Response(serializer.data)
         else:
-            return(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
+            return Response(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 
