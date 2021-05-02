@@ -17,16 +17,24 @@ class ArtistList(APIView):
         return Response(serializer.data)
 
     def post(ArtistList, request):
-        if request.data and type(request.data['name'])== str and type(request.data['age'])== int:
-            post_data = request.data
-            id = b64encode(post_data['name'].encode()).decode('utf-8')
-            id = id[0:21]
-            albums = f"https://tarea2--taller.herokuapp.com/artists/{id}/albums"
-            tracks = f"https://tarea2--taller.herokuapp.com/artists/{id}/tracks"
-            nuevo_artista = Artist.objects.create(id = id, name = post_data['name'], age = post_data['age'], albums = albums, tracks = tracks)
-            nuevo_artista.save()
-            serializer = ArtistSerializer(nuevo_artista)
-            return Response(serializer.data)
+        if request.data and request.data['name'] and (request.data['age']:
+            if type(request.data['name'])== str and type(request.data['age'])== int:
+                post_data = request.data
+                id = b64encode(post_data['name'].encode()).decode('utf-8')
+                id = id[0:21]
+                if Artist.objects.get(id = id):
+                    artista_viejo = Artist.objects.get(id = id)
+                    serializer = ArtistSerializer(artista_viejo)
+                    return Response(serializer.data, status = status.HTTP_409_CONFLICT)
+                else:
+                    albums = f"https://tarea2--taller.herokuapp.com/artists/{id}/albums"
+                    tracks = f"https://tarea2--taller.herokuapp.com/artists/{id}/tracks"
+                    nuevo_artista = Artist.objects.create(id = id, name = post_data['name'], age = post_data['age'], albums = albums, tracks = tracks)
+                    nuevo_artista.save()
+                    serializer = ArtistSerializer(nuevo_artista)
+                    return Response(serializer.data)
+            else:
+                return Response(status= status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status= status.HTTP_400_BAD_REQUEST)
 
@@ -54,7 +62,7 @@ class ArtistById(APIView):
         
         return Response(serializer.data)
 
-    def delete(self,request):
+    def delete(self,request, id):
         artist = Artist.objects.get(id = id)
         artist.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -68,7 +76,7 @@ class AlbumById(APIView):
         serializer = AlbumSerializer(album)
         return Response(serializer.data)
 
-    def delete(self,request):
+    def delete(self,request, id):
         album = Album.objects.get(id = id)
         album.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -80,7 +88,7 @@ class CancionById(APIView):
         serializer = CancionSerializer(cancion)
         return Response(serializer.data)
 
-    def delete(self,request):
+    def delete(self,request, id):
         cancion = Cancion.objects.get(id = id)
         cancion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
