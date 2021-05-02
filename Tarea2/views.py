@@ -127,17 +127,21 @@ class CancionByAlbum(APIView):
         return Response(serializer.data)
 
     def post(self, request, album_id):
-        post_data = request.data
-        nombre = post_data['name']+":"+album_id
-        id = b64encode(nombre.encode()).decode('utf-8')
-        id = id[0:21]
-        album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
-        dependencia = Album.objects.get(id = album_id)
-        artist = f"http://tarea2--taller.herokuapp.com/{dependencia.dependencia.id}"
-        nueva_cancion = Cancion.objects.create(id = id, name = post_data['name'], duration = post_data['duration'], times_played = 0, artist = artist, album = album, dependencia = dependencia, album_id = album_id)
-        nueva_cancion.save()
-        serializer = CancionSerializer(nueva_cancion)
-        return Response(serializer.data)
+        if Album.objects.get(id = album_id):
+            post_data = request.data
+            nombre = post_data['name']+":"+album_id
+            id = b64encode(nombre.encode()).decode('utf-8')
+            id = id[0:21]
+            album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
+            dependencia = Album.objects.get(id = album_id)
+            artist = f"http://tarea2--taller.herokuapp.com/{dependencia.dependencia.id}"
+            nueva_cancion = Cancion.objects.create(id = id, name = post_data['name'], duration = post_data['duration'], times_played = 0, artist = artist, album = album, dependencia = dependencia, album_id = album_id)
+            nueva_cancion.save()
+            serializer = CancionSerializer(nueva_cancion)
+            return Response(serializer.data)
+        else:
+            return(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
+
 
 
 class PlayByArtist(APIView):
