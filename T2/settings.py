@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'i2#bnkthrhy%6(c#18z44qw17xtw8^-hf@tqb_c^$t_!m@!l7+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tarea2--taller.herokuapp.com']
 
 
 # Application definition
