@@ -6,7 +6,7 @@ class ArtistSerializer(serializers.ModelSerializer):
     self = serializers.SerializerMethodField('crear_self')
     
     def crear_self(ArtistSerializer, artist):
-        url_self = f"http://localhost:8000/artists/{artist.id}"
+        url_self = f"http://tarea2--taller.herokuapp.com/artists/{artist.id}"
         return url_self
 
     class Meta:
@@ -17,7 +17,7 @@ class AlbumSerializer(serializers.ModelSerializer):
     self = serializers.SerializerMethodField('crear_self')
     
     def crear_self(AlbumSerializer, album):
-        url_self = f"http://localhost:8000/albums/{album.id}"
+        url_self = f"http://tarea2--taller.herokuapp.com/albums/{album.id}"
         return url_self
 
     class Meta:
@@ -29,7 +29,7 @@ class CancionSerializer(serializers.ModelSerializer):
     self = serializers.SerializerMethodField('crear_self')
     
     def crear_self(CancionSerializer, track):
-        url_self = f"http://localhost:8000/tracks/{track.id}"
+        url_self = f"http://tarea2--taller.herokuapp.com/tracks/{track.id}"
         return url_self
 
     class Meta:

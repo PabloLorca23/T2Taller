@@ -17,14 +17,18 @@ class ArtistList(APIView):
         return Response(serializer.data)
 
     def post(ArtistList, request):
-        post_data = request.data
-        id = b64encode(post_data['name'].encode()).decode('utf-8')
-        albums = f"http://localhost:8000/artists/{id}/albums"
-        tracks = f"http://localhost:8000/artists/{id}/tracks"
-        nuevo_artista = Artist.objects.create(id = id, name = post_data['name'], age = post_data['age'], albums = albums, tracks = tracks)
-        nuevo_artista.save()
-        serializer = ArtistSerializer(nuevo_artista)
-        return Response(serializer.data)
+        if request.data and type(request.data['name'])== str and type(request.data['age'])== int:
+            post_data = request.data
+            id = b64encode(post_data['name'].encode()).decode('utf-8')
+            id = id[0:21]
+            albums = f"https://tarea2--taller.herokuapp.com/artists/{id}/albums"
+            tracks = f"https://tarea2--taller.herokuapp.com/artists/{id}/tracks"
+            nuevo_artista = Artist.objects.create(id = id, name = post_data['name'], age = post_data['age'], albums = albums, tracks = tracks)
+            nuevo_artista.save()
+            serializer = ArtistSerializer(nuevo_artista)
+            return Response(serializer.data)
+        else:
+            return(status= status.HTTP_400_BAD_REQUEST)
 
 class AlbumList(APIView):
 
@@ -84,27 +88,31 @@ class CancionById(APIView):
 class AlbumByArtist(APIView):
 
     def get(self, request, artist_id):
-        url_artist = f"http://localhost:8000/artists/{artist_id}"
+        url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
         album = Album.objects.get(artist = url_artist)
         serializer = AlbumSerializer(album)
         return Response(serializer.data)
 
     def post(self, request, artist_id):
-        post_data = request.data
-        nombre = post_data['name']+":"+artist_id
-        id = b64encode(nombre.encode()).decode('utf-8')
-        artista = f"http://localhost:8000/artists/{artist_id}"
-        tracks = f"http://localhost:8000/albums/{id}/tracks"
-        dependencia = Artist.objects.get(id = artist_id)
-        nuevo_album = Album.objects.create(id = id, name = post_data['name'], genre = post_data['genre'], artist = artista, tracks = tracks, dependencia = dependencia, artist_id = artist_id)
-        nuevo_album.save()
-        serializer = AlbumSerializer(nuevo_album)
-        return Response(serializer.data)
+        if Artist.objects.get(id = artist_id):
+            post_data = request.data
+            nombre = post_data['name']+":"+artist_id
+            id = b64encode(nombre.encode()).decode('utf-8')
+            id = id[0:21]
+            artista = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
+            tracks = f"http://tarea2--taller.herokuapp.com/albums/{id}/tracks"
+            dependencia = Artist.objects.get(id = artist_id)
+            nuevo_album = Album.objects.create(id = id, name = post_data['name'], genre = post_data['genre'], artist = artista, tracks = tracks, dependencia = dependencia, artist_id = artist_id)
+            nuevo_album.save()
+            serializer = AlbumSerializer(nuevo_album)
+            return Response(serializer.data)
+        else:
+            return(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 class CancionByArtist(APIView):
 
     def get(self, request, artist_id):
-        url_artist = f"http://localhost:8000/artists/{artist_id}"
+        url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
         canciones = Cancion.objects.get(artist = url_artist)
         serializer = CancionSerializer(canciones)
         return Response(serializer.data)
@@ -113,7 +121,7 @@ class CancionByArtist(APIView):
 class CancionByAlbum(APIView):
 
     def get(self, request, album_id):
-        url_album = f"http://localhost:8000/albums/{album_id}"
+        url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
         tracks = Cancion.objects.get(album = url_album, many = True)
         serializer = CancionSerializer(tracks)
         return Response(serializer.data)
@@ -122,9 +130,10 @@ class CancionByAlbum(APIView):
         post_data = request.data
         nombre = post_data['name']+":"+album_id
         id = b64encode(nombre.encode()).decode('utf-8')
-        album = f"http://localhost:8000/albums/{album_id}"
+        id = id[0:21]
+        album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
         dependencia = Album.objects.get(id = album_id)
-        artist = f"http://localhost:8000/artists/{dependencia.dependencia.id}"
+        artist = f"http://tarea2--taller.herokuapp.com/{dependencia.dependencia.id}"
         nueva_cancion = Cancion.objects.create(id = id, name = post_data['name'], duration = post_data['duration'], times_played = 0, artist = artist, album = album, dependencia = dependencia, album_id = album_id)
         nueva_cancion.save()
         serializer = CancionSerializer(nueva_cancion)
@@ -134,7 +143,7 @@ class CancionByAlbum(APIView):
 class PlayByArtist(APIView):
 
     def put(self, request, artist_id):
-        url_artist = f"http://localhost:8000/artists/{artist_id}"
+        url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
         canciones = Cancion.objects.get(artist = url_artist, many = True)
         canciones.times_played +=1
         canciones.save()
