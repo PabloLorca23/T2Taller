@@ -32,11 +32,17 @@ class ArtistList(APIView):
                     nuevo_artista = Artist.objects.create(id = id, name = post_data['name'], age = post_data['age'], albums = albums, tracks = tracks)
                     nuevo_artista.save()
                     serializer = ArtistSerializer(nuevo_artista)
-                    return Response(serializer.data)
+                    return Response(serializer.data, status = status.HTTP_201_CREATED)
             else:
                 return Response(status= status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status= status.HTTP_400_BAD_REQUEST)
+
+    def put(ArtistList,request):
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def delete(ArtistList,request):
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED))
 
 class AlbumList(APIView):
 
