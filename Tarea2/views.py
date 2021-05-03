@@ -69,7 +69,7 @@ class CancionList(APIView):
 class ArtistById(APIView):
 
     def get(self, request,id):
-        artist = Artist.objects.filter(id = id)
+        artist = Artist.objects.get(id = id)
         if artist:
             serializer = ArtistSerializer(artist)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -77,7 +77,7 @@ class ArtistById(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        artist = Artist.objects.filter(id = id)
+        artist = Artist.objects.get(id = id)
         if artist:
             artist.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -90,7 +90,7 @@ class ArtistById(APIView):
 class AlbumById(APIView):
 
     def get(self, request,id):
-        album = Album.objects.filter(id = id)
+        album = Album.objects.get(id = id)
         if album:
             serializer = AlbumSerializer(album)
             return Response(serializer.data)
@@ -98,7 +98,7 @@ class AlbumById(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        album = Album.objects.filter(id = id)
+        album = Album.objects.get(id = id)
         if album:
             album.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
