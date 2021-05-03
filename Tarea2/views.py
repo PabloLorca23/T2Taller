@@ -42,7 +42,7 @@ class ArtistList(APIView):
         return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def delete(ArtistList,request):
-        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED))
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class AlbumList(APIView):
 
