@@ -17,7 +17,7 @@ class ArtistList(APIView):
         return Response(serializer.data)
 
     def post(ArtistList, request):
-        if request.data and request.data['name'] and request.data['age']:
+        if request.data and ('name' in request.data.keys())and ('name' in request.data.keys()):
             if type(request.data['name'])== str and type(request.data['age'])== int:
                 post_data = request.data
                 id = b64encode(post_data['name'].encode()).decode('utf-8')
