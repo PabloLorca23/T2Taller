@@ -21,7 +21,7 @@ class ArtistList(APIView):
             if type(request.data['name'])== str and type(request.data['age'])== int:
                 post_data = request.data
                 id = b64encode(post_data['name'].encode()).decode('utf-8')
-                id = id[0:21]
+                id = id[0:22]
                 if len(Artist.objects.filter(id = id))>0:
                     artista_viejo = Artist.objects.get(id = id)
                     serializer = ArtistSerializer(artista_viejo)
@@ -141,7 +141,7 @@ class AlbumByArtist(APIView):
                     post_data = request.data
                     nombre = post_data['name']+":"+artist_id
                     id = b64encode(nombre.encode()).decode('utf-8')
-                    id = id[0:21]
+                    id = id[0:22]
                     if len(Albums.objects.filter(id = id))>0:
                         return Response(status= status.HTTP_409_CONFLICT)
                     else:
@@ -190,7 +190,7 @@ class CancionByAlbum(APIView):
                     post_data = request.data
                     nombre = post_data['name']+":"+album_id
                     id = b64encode(nombre.encode()).decode('utf-8')
-                    id = id[0:21]
+                    id = id[0:22]
                     if len(Cancion.objects.filter(id = id))>0:
                         return Response(status= status.HTTP_409_CONFLICT)
                     else:
