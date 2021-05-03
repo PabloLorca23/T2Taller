@@ -143,7 +143,9 @@ class AlbumByArtist(APIView):
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:22]
                     if len(Album.objects.filter(id = id))>0:
-                        return Response(status= status.HTTP_409_CONFLICT)
+                        album_viejo = Album.objects.get(id = id)
+                        serializer = AlbumSerializer(album_viejo)
+                        return Response(serializer.data, status= status.HTTP_409_CONFLICT)
                     else:
                         artista = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
                         tracks = f"http://tarea2--taller.herokuapp.com/albums/{id}/tracks"
@@ -192,7 +194,9 @@ class CancionByAlbum(APIView):
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:22]
                     if len(Cancion.objects.filter(id = id))>0:
-                        return Response(status= status.HTTP_409_CONFLICT)
+                        cancion_vieja = Cancion.objects.get(id = id)
+                        serializer = CancionSerializer(cancion_vieja)
+                        return Response(serializer.data, status= status.HTTP_409_CONFLICT)
                     else:
                         album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
                         dependencia = Album.objects.get(id = album_id)
