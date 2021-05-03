@@ -188,7 +188,7 @@ class CancionByAlbum(APIView):
     def post(self, request, album_id):
         if len(Album.objects.filter(id = album_id))>0:
             if request.data and ('name' in request.data.keys()) and ('duration' in request.data.keys()): 
-                if type(request.data['name'])== str and type(request.data['genre'])== float:
+                if type(request.data['name'])== str and type(request.data['duration'])== float:
                     post_data = request.data
                     nombre = post_data['name']+":"+album_id
                     id = b64encode(nombre.encode()).decode('utf-8')
