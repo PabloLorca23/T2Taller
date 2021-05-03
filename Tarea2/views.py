@@ -232,7 +232,7 @@ class PlayByAlbum(APIView):
 
     def put(self, request, album_id):
         if len(Album.objects.filter(id = album_id))>0:
-            url_album = f"http://tarea2--taller.herokuapp.com/albums/{artist_id}"
+            url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
             canciones = Cancion.objects.filter(album = url_album)
             for cancion in canciones:
                 cancion.times_played +=1
@@ -249,7 +249,7 @@ class PlayByTrack(APIView):
             cancion = Cancion.objects.get(id = track_id)
             cancion.times_played +=1
             cancion.save()
-            serializer = CancionSerializer(canciones)
+            serializer = CancionSerializer(cancion)
             return Response(status = status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
