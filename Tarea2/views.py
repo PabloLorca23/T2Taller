@@ -219,11 +219,13 @@ class PlayByArtist(APIView):
     def put(self, request, artist_id):
         if len(Artist.objects.filter(id = artist_id))>0:
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
-            canciones = Cancion.objects.filter(artist = url_artist)
-            for cancion in canciones:
-                cancion.times_played +=1
-                cancion.save()
-            serializer = CancionSerializer(canciones, many=True)
+            albums = Album.objects.filter(artist_id = artist_id)
+            for album in albums:
+                canciones = Cancion.objects.filter(album_id = album.id)
+                for cancion in canciones:
+                    cancion.times_played += 1
+                    cancion.save()
+            
             return Response(status = status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -233,11 +235,11 @@ class PlayByAlbum(APIView):
     def put(self, request, album_id):
         if len(Album.objects.filter(id = album_id))>0:
             url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
-            canciones = Cancion.objects.filter(album = url_album)
+            canciones = Cancion.objects.filter(album_id = album_id)
             for cancion in canciones:
-                cancion.times_played +=1
+                cancion.times_played += 1
                 cancion.save()
-            serializer = CancionSerializer(canciones, many=True)
+            
             return Response(status = status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -247,9 +249,9 @@ class PlayByTrack(APIView):
     def put(self, request, track_id):
         if len(Cancion.objects.filter(id = track_id))>0:
             cancion = Cancion.objects.get(id = track_id)
-            cancion.times_played +=1
+            cancion.times_played += 1
             cancion.save()
-            serializer = CancionSerializer(cancion)
+    
             return Response(status = status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
