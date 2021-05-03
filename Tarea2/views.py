@@ -14,7 +14,7 @@ class ArtistList(APIView):
     def get(ArtistList, request):
         artists1 = Artist.objects.all()
         serializer = ArtistSerializer(artists1, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(ArtistList, request):
         if request.data and ('name' in request.data.keys()) and ('age' in request.data.keys()):
@@ -49,24 +49,31 @@ class AlbumList(APIView):
     def get(self, request):
         albums1 = Album.objects.all()
         serializer=AlbumSerializer(albums1, many=True)
-        return Response(serializer.data)
-    
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(AlbumList, request):
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED)
+    def put(AlbumList, request):
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED) 
+    def delete(AlbumList, request):
+        return Response(status = status.HTTP_405_METHOD_NOT_ALLOWED)   
 
 class CancionList(APIView):
 
     def get(self, request):
         canciones1 = Cancion.objects.all()
         serializer=CancionSerializer(canciones1, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ArtistById(APIView):
 
     def get(self, request,id):
-        artist = Artist.objects.get(id = id)
-        serializer = ArtistSerializer(artist)
+        artist = Artist.objects.filter(id = id)
+        if artist:
+            serializer = ArtistSerializer(artist)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         
-        return Response(serializer.data)
 
     def delete(self,request, id):
         artist = Artist.objects.get(id = id)
