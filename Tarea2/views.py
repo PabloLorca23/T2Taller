@@ -126,15 +126,18 @@ class CancionById(APIView):
 class AlbumByArtist(APIView):
 
     def get(self, request, artist_id):
-        url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
-        album = Album.objects.get(artist = url_artist)
-        serializer = AlbumSerializer(album)
-        return Response(serializer.data)
+        if Artist.objects.filter(id = artist_id):
+            url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
+            album = Album.objects.filter(artist = url_artist)
+            serializer = AlbumSerializer(album, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, artist_id):
         if Artist.objects.filter(id = artist_id):
             if request.data and ('name' in request.data.keys()) and ('genre' in request.data.keys()): 
-                if type(request.data['name'])== str and type(request.data['genre']):
+                if type(request.data['name'])== str and type(request.data['genre'])==str:
                     post_data = request.data
                     nombre = post_data['name']+":"+artist_id
                     id = b64encode(nombre.encode()).decode('utf-8')
@@ -161,8 +164,8 @@ class CancionByArtist(APIView):
     def get(self, request, artist_id):
         if Artists.objects.filter(id = artist_id):
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
-            canciones = Cancion.objects.get(artist = url_artist)
-            serializer = CancionSerializer(canciones)
+            canciones = Cancion.objects.filter(artist = url_artist)
+            serializer = CancionSerializer(canciones, many=True)
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -172,24 +175,36 @@ class CancionByArtist(APIView):
 class CancionByAlbum(APIView):
 
     def get(self, request, album_id):
-        url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
-        tracks = Cancion.objects.get(album = url_album, many = True)
-        serializer = CancionSerializer(tracks)
-        return Response(serializer.data)
+        if Albums.objects.filter(id = album_id):
+            url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
+            tracks = Cancion.objects.filter(album = url_album)
+            serializer = CancionSerializer(tracks, many = True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, album_id):
         if Album.objects.get(id = album_id):
-            post_data = request.data
-            nombre = post_data['name']+":"+album_id
-            id = b64encode(nombre.encode()).decode('utf-8')
-            id = id[0:21]
-            album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
-            dependencia = Album.objects.get(id = album_id)
-            artist = f"http://tarea2--taller.herokuapp.com/{dependencia.dependencia.id}"
-            nueva_cancion = Cancion.objects.create(id = id, name = post_data['name'], duration = post_data['duration'], times_played = 0, artist = artist, album = album, dependencia = dependencia, album_id = album_id)
-            nueva_cancion.save()
-            serializer = CancionSerializer(nueva_cancion)
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
+            if request.data and ('name' in request.data.keys()) and ('duration' in request.data.keys()): 
+                if type(request.data['name'])== str and type(request.data['genre'])== float:
+                    post_data = request.data
+                    nombre = post_data['name']+":"+album_id
+                    id = b64encode(nombre.encode()).decode('utf-8')
+                    id = id[0:21]
+                    if Cancion.objects.filter(id = id):
+                        return eturn Response(status= status.HTTP_409_CONFLICT)
+                    else:
+                        album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
+                        dependencia = Album.objects.get(id = album_id)
+                        artist = f"http://tarea2--taller.herokuapp.com/{dependencia.dependencia.id}"
+                        nueva_cancion = Cancion.objects.create(id = id, name = post_data['name'], duration = post_data['duration'], times_played = 0, artist = artist, album = album, dependencia = dependencia, album_id = album_id)
+                        nueva_cancion.save()
+                        serializer = CancionSerializer(nueva_cancion)
+                        return Response(serializer.data, status = status.HTTP_201_CREATED)
+                else:
+                    return Response(status= status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(status= status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status= status.HTTP_422_UNPROCESSABLE_ENTITY)
 
@@ -198,31 +213,42 @@ class CancionByAlbum(APIView):
 class PlayByArtist(APIView):
 
     def put(self, request, artist_id):
-        url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
-        canciones = Cancion.objects.get(artist = url_artist, many = True)
-        canciones.times_played +=1
-        canciones.save()
-        serializer = CancionSerializer(canciones)
-        return Response(status = status.HTTP_200_OK)
-        
+        if Artists.objects.filter(id = artist_id):
+            url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
+            canciones = Cancion.objects.filter(artist = url_artist)
+            for cancion in canciones:
+                cancion.times_played +=1
+                cancion.save()
+            serializer = CancionSerializer(canciones, many=True)
+            return Response(status = status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class PlayByAlbum(APIView):
 
     def put(self, request, album_id):
-        canciones = Cancion.objects.get(album_id = album_id, many = True)
-        canciones.times_played +=1
-        canciones.save()
-        serializer = CancionSerializer(canciones)
-        return Response(serializer.data)
+        if Album.objects.filter(id = album_id):
+            url_album = f"http://tarea2--taller.herokuapp.com/albums/{artist_id}"
+            canciones = Cancion.objects.filter(album = url_album)
+            for cancion in canciones:
+                cancion.times_played +=1
+                cancion.save()
+            serializer = CancionSerializer(canciones, many=True)
+            return Response(status = status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class PlayByTrack(APIView):
 
     def put(self, request, track_id):
-        canciones = Cancion.objects.get(id = track_id, many = True)
-        canciones.times_played +=1
-        serializer = CancionSerializer(canciones)
-        canciones.save()
-        return Response(serializer.data)
+        if Cancion.objects.filter(id = track_id):
+            cancion = Cancion.objects.filter(id = track_id)
+            cancion.times_played +=1
+            cancion.save()
+            serializer = CancionSerializer(canciones)
+            return Response(status = status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 
