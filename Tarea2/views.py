@@ -22,7 +22,7 @@ class ArtistList(APIView):
                 post_data = request.data
                 id = b64encode(post_data['name'].encode()).decode('utf-8')
                 id = id[0:21]
-                if Artist.objects.filter(id = id):
+                if Artist.objects.get(id = id):
                     artista_viejo = Artist.objects.get(id = id)
                     serializer = ArtistSerializer(artista_viejo)
                     return Response(serializer.data, status = status.HTTP_409_CONFLICT)
@@ -135,7 +135,7 @@ class AlbumByArtist(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, artist_id):
-        if Artist.objects.filter(id = artist_id):
+        if Artist.objects.get(id = artist_id):
             if request.data and ('name' in request.data.keys()) and ('genre' in request.data.keys()): 
                 if type(request.data['name'])== str and type(request.data['genre'])==str:
                     post_data = request.data
