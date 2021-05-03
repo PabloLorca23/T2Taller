@@ -69,16 +69,16 @@ class CancionList(APIView):
 class ArtistById(APIView):
 
     def get(self, request,id):
-        artist = Artist.objects.get(id = id)
-        if artist:
+        if Artist.objects.get(id = id):
+            artist = Artist.objects.get(id = id)
             serializer = ArtistSerializer(artist)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else: 
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        artist = Artist.objects.get(id = id)
-        if artist:
+        if Artist.objects.get(id = id):
+            artist = Artist.objects.filter(id = id)
             artist.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
@@ -90,16 +90,16 @@ class ArtistById(APIView):
 class AlbumById(APIView):
 
     def get(self, request,id):
-        album = Album.objects.get(id = id)
-        if album:
+        if Album.objects.get(id = id):
+            album = Album.objects.get(id = id)
             serializer = AlbumSerializer(album)
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        album = Album.objects.get(id = id)
-        if album:
+        if Album.objects.get(id = id):
+            album = Album.objects.filter(id = id)
             album.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
@@ -108,16 +108,16 @@ class AlbumById(APIView):
 class CancionById(APIView):
 
     def get(self, request,id):
-        cancion = Cancion.objects.get(id = id)
-        if cancion:
+        if Cancion.objects.get(id = id):
+            cancion = Cancion.objects.get(id = id)
             serializer = CancionSerializer(cancion)
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        cancion = Cancion.objects.get(id = id)
-        if cancion:
+        if Cancion.objects.filter(id = id):
+            cancion = Cancion.objects.filter(id = id)
             cancion.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
@@ -126,7 +126,7 @@ class CancionById(APIView):
 class AlbumByArtist(APIView):
 
     def get(self, request, artist_id):
-        if Artist.objects.filter(id = artist_id):
+        if Artist.objects.get(id = artist_id):
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
             album = Album.objects.filter(artist = url_artist)
             serializer = AlbumSerializer(album, many=True)
@@ -142,7 +142,7 @@ class AlbumByArtist(APIView):
                     nombre = post_data['name']+":"+artist_id
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:21]
-                    if Albums.objects.filter(id = id):
+                    if Albums.objects.get(id = id):
                         return Response(status= status.HTTP_409_CONFLICT)
                     else:
                         artista = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
@@ -162,7 +162,7 @@ class AlbumByArtist(APIView):
 class CancionByArtist(APIView):
 
     def get(self, request, artist_id):
-        if Artists.objects.filter(id = artist_id):
+        if Artists.objects.get(id = artist_id):
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
             canciones = Cancion.objects.filter(artist = url_artist)
             serializer = CancionSerializer(canciones, many=True)
@@ -175,7 +175,7 @@ class CancionByArtist(APIView):
 class CancionByAlbum(APIView):
 
     def get(self, request, album_id):
-        if Albums.objects.filter(id = album_id):
+        if Albums.objects.get(id = album_id):
             url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
             tracks = Cancion.objects.filter(album = url_album)
             serializer = CancionSerializer(tracks, many = True)
@@ -191,7 +191,7 @@ class CancionByAlbum(APIView):
                     nombre = post_data['name']+":"+album_id
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:21]
-                    if Cancion.objects.filter(id = id):
+                    if Cancion.objects.get(id = id):
                         return Response(status= status.HTTP_409_CONFLICT)
                     else:
                         album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
@@ -213,7 +213,7 @@ class CancionByAlbum(APIView):
 class PlayByArtist(APIView):
 
     def put(self, request, artist_id):
-        if Artists.objects.filter(id = artist_id):
+        if Artists.objects.get(id = artist_id):
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
             canciones = Cancion.objects.filter(artist = url_artist)
             for cancion in canciones:
@@ -227,7 +227,7 @@ class PlayByArtist(APIView):
 class PlayByAlbum(APIView):
 
     def put(self, request, album_id):
-        if Album.objects.filter(id = album_id):
+        if Album.objects.get(id = album_id):
             url_album = f"http://tarea2--taller.herokuapp.com/albums/{artist_id}"
             canciones = Cancion.objects.filter(album = url_album)
             for cancion in canciones:
@@ -241,7 +241,7 @@ class PlayByAlbum(APIView):
 class PlayByTrack(APIView):
 
     def put(self, request, track_id):
-        if Cancion.objects.filter(id = track_id):
+        if Cancion.objects.get(id = track_id):
             cancion = Cancion.objects.filter(id = track_id)
             cancion.times_played +=1
             cancion.save()
