@@ -164,11 +164,11 @@ class AlbumByArtist(APIView):
 class CancionByArtist(APIView):
 
     def get(self, request, artist_id):
-        if len(Artists.objects.filter(id = artist_id))>0:
+        if len(Artist.objects.filter(id = artist_id))>0:
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
             canciones = Cancion.objects.filter(artist = url_artist)
             serializer = CancionSerializer(canciones, many=True)
-            return Response(serializer.data)
+            return Response(serializer.data,status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -217,7 +217,7 @@ class CancionByAlbum(APIView):
 class PlayByArtist(APIView):
 
     def put(self, request, artist_id):
-        if len(Artists.objects.filter(id = artist_id))>0:
+        if len(Artist.objects.filter(id = artist_id))>0:
             url_artist = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
             canciones = Cancion.objects.filter(artist = url_artist)
             for cancion in canciones:
