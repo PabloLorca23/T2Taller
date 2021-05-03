@@ -192,7 +192,7 @@ class CancionByAlbum(APIView):
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:21]
                     if Cancion.objects.filter(id = id):
-                        return eturn Response(status= status.HTTP_409_CONFLICT)
+                        return Response(status= status.HTTP_409_CONFLICT)
                     else:
                         album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
                         dependencia = Album.objects.get(id = album_id)
