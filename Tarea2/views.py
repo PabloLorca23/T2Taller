@@ -142,7 +142,7 @@ class AlbumByArtist(APIView):
                     nombre = post_data['name']+":"+artist_id
                     id = b64encode(nombre.encode()).decode('utf-8')
                     id = id[0:22]
-                    if len(Albums.objects.filter(id = id))>0:
+                    if len(Album.objects.filter(id = id))>0:
                         return Response(status= status.HTTP_409_CONFLICT)
                     else:
                         artista = f"http://tarea2--taller.herokuapp.com/artists/{artist_id}"
@@ -175,7 +175,7 @@ class CancionByArtist(APIView):
 class CancionByAlbum(APIView):
 
     def get(self, request, album_id):
-        if len(Albums.objects.filter(id = album_id))>0:
+        if len(Album.objects.filter(id = album_id))>0:
             url_album = f"http://tarea2--taller.herokuapp.com/albums/{album_id}"
             tracks = Cancion.objects.filter(album = url_album)
             serializer = CancionSerializer(tracks, many = True)
