@@ -29,7 +29,7 @@ urlpatterns = [
     path('artists/<str:artist_id>/albums', views.AlbumByArtist.as_view()),
     path('artists/<str:artist_id>/tracks', views.CancionByArtist.as_view()),
     path('albums/<str:album_id>/tracks', views.CancionByAlbum.as_view()),
-    path('artists/<str:artist_id>/play', views.PlayByArtist.as_view()),
-    path('albums/<str:album_id>/play', views.PlayByAlbum.as_view()),
+    path('artists/<str:artist_id>/albums/play', views.PlayByArtist.as_view()),
+    path('albums/<str:album_id>/tracks/play', views.PlayByAlbum.as_view()),
     path('tracks/<str:track_id>/play', views.PlayByTrack.as_view())
 ]
