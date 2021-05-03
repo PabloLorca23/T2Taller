@@ -73,38 +73,55 @@ class ArtistById(APIView):
         if artist:
             serializer = ArtistSerializer(artist)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
+        else: 
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        artist = Artist.objects.get(id = id)
-        artist.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        artist = Artist.objects.filter(id = id)
+        if artist:
+            artist.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 
 
 class AlbumById(APIView):
 
     def get(self, request,id):
-        album = Album.objects.get(id = id)
-        serializer = AlbumSerializer(album)
-        return Response(serializer.data)
+        album = Album.objects.filter(id = id)
+        if album:
+            serializer = AlbumSerializer(album)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
-        album = Album.objects.get(id = id)
-        album.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        album = Album.objects.filter(id = id)
+        if album:
+            album.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class CancionById(APIView):
 
     def get(self, request,id):
         cancion = Cancion.objects.get(id = id)
-        serializer = CancionSerializer(cancion)
-        return Response(serializer.data)
+        if cancion:
+            serializer = CancionSerializer(cancion)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self,request, id):
         cancion = Cancion.objects.get(id = id)
-        cancion.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if cancion:
+            cancion.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
 class AlbumByArtist(APIView):
 
